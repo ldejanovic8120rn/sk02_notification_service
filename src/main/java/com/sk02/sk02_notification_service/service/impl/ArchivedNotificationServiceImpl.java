@@ -29,20 +29,20 @@ public class ArchivedNotificationServiceImpl implements ArchivedNotificationServ
         Claims claims = tokenService.parseToken(authorization.split(" ")[1]);
         String role = claims.get("role", String.class);
 
-        List<ArchivedNotificationDto> archivedNotifications = new ArrayList<>();
+        List<ArchivedNotificationDto> archivedNotifications;
 
         if (role.equals("ADMIN")) {
             if (anFilterDto.getType() != null && anFilterDto.getStartDate() != null && anFilterDto.getEndDate() != null) {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByTypeAndCreatedBetween(anFilterDto.getType(), anFilterDto.getStartDate(), anFilterDto.getEndDate()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else if (anFilterDto.getStartDate() != null && anFilterDto.getEndDate() != null) {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByCreatedBetween(anFilterDto.getStartDate(), anFilterDto.getEndDate()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else if (anFilterDto.getType() != null) {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByType(anFilterDto.getType()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else {
-
+                archivedNotifications = archivedNotificationRepository.findAll().stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
         }
         else {
@@ -52,16 +52,15 @@ public class ArchivedNotificationServiceImpl implements ArchivedNotificationServ
                 archivedNotifications = archivedNotificationRepository.findArchivedNotificationByEmailAndTypeAndCreatedBetween(email, anFilterDto.getType(), anFilterDto.getStartDate(), anFilterDto.getEndDate()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else if (anFilterDto.getStartDate() != null && anFilterDto.getEndDate() != null) {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByEmailAndCreatedBetween(email, anFilterDto.getStartDate(), anFilterDto.getEndDate()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else if (anFilterDto.getType() != null) {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByEmailAndType(email, anFilterDto.getType()).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
             else {
-
+                archivedNotifications = archivedNotificationRepository.findArchivedNotificationByEmail(email).stream().map(archivedNotificationMapper::anToAnDto).collect(Collectors.toList());
             }
         }
-
 
         return archivedNotifications;
     }
