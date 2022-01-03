@@ -1,9 +1,12 @@
 package com.sk02.sk02_notification_service.controller;
 
+import com.sk02.sk02_notification_service.dto.archived.ANFilterDto;
+import com.sk02.sk02_notification_service.dto.archived.ArchivedNotificationDto;
 import com.sk02.sk02_notification_service.dto.notification.NotificationCreateDto;
 import com.sk02.sk02_notification_service.dto.notification.NotificationDto;
 import com.sk02.sk02_notification_service.dto.notification.NotificationUpdateDto;
 import com.sk02.sk02_notification_service.security.CheckSecurity;
+import com.sk02.sk02_notification_service.service.ArchivedNotificationService;
 import com.sk02.sk02_notification_service.service.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +18,13 @@ import java.util.List;
 @RequestMapping("/notifications")
 public class NotificationController {
 
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
+    private final ArchivedNotificationService archivedNotificationService;
+
+    public NotificationController(NotificationService notificationService, ArchivedNotificationService archivedNotificationService) {
+        this.notificationService = notificationService;
+        this.archivedNotificationService = archivedNotificationService;
+    }
 
     @GetMapping
     @CheckSecurity(roles = {"ADMIN"})
@@ -40,5 +49,11 @@ public class NotificationController {
     public ResponseEntity<HttpStatus> deleteNotification(@RequestHeader("Authorization") String authorization, @PathVariable("id") Long id) {
         notificationService.deleteNotification(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/archived")
+    @CheckSecurity(roles = {"ADMIN"})
+    public ResponseEntity<List<ArchivedNotificationDto>> getArchivedNotifications(@RequestHeader("Authorization") String authorization, @RequestBody ANFilterDto anFilterDto) {
+        return new ResponseEntity<>(archivedNotificationService.getNotifications(anFilterDto, authorization), HttpStatus.OK);
     }
 }

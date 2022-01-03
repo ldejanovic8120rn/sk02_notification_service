@@ -8,16 +8,23 @@ import com.sk02.sk02_notification_service.repository.ArchivedNotificationReposit
 import com.sk02.sk02_notification_service.security.service.TokenService;
 import com.sk02.sk02_notification_service.service.ArchivedNotificationService;
 import io.jsonwebtoken.Claims;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ArchivedNotificationServiceImpl implements ArchivedNotificationService {
 
-    private ArchivedNotificationRepository archivedNotificationRepository;
-    private ArchivedNotificationMapper archivedNotificationMapper;
-    private TokenService tokenService;
+    private final ArchivedNotificationRepository archivedNotificationRepository;
+    private final ArchivedNotificationMapper archivedNotificationMapper;
+    private final TokenService tokenService;
+
+    public ArchivedNotificationServiceImpl(ArchivedNotificationRepository archivedNotificationRepository, ArchivedNotificationMapper archivedNotificationMapper, TokenService tokenService) {
+        this.archivedNotificationRepository = archivedNotificationRepository;
+        this.archivedNotificationMapper = archivedNotificationMapper;
+        this.tokenService = tokenService;
+    }
 
     @Override
     public void createArchivedNotification(ArchivedNotification archivedNotification) {
