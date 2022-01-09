@@ -51,8 +51,8 @@ public class NotificationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/archived")
-    @CheckSecurity(roles = {"ADMIN"})
+    @PostMapping("/archived")
+    @CheckSecurity(roles = {"ADMIN", "MANAGER", "CLIENT"})
     public ResponseEntity<List<ArchivedNotificationDto>> getArchivedNotifications(@RequestHeader("Authorization") String authorization, @RequestBody ANFilterDto anFilterDto) {
         return new ResponseEntity<>(archivedNotificationService.getNotifications(anFilterDto, authorization), HttpStatus.OK);
     }
